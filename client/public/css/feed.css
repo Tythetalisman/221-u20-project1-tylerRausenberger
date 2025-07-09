@@ -31,9 +31,17 @@ footer {
 }
 
 #portal_button {
-	position: fixed;
-	right: 30px;
-	top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  margin-right: 20px;
+}
+
+#portal_button span {
+  font-size: 30px;
+  color: white;
+  font-weight: normal;
 }
 
 a {
@@ -41,11 +49,9 @@ a {
 	text-decoration: none;
 }
 
-#redfox{
-	position: relative;
-	float: left;
-	height: 50px;
-	bottom: 5px;
+#redfox {
+  height: 60px;
+  width: auto;
 }
 
 #newsfeed {

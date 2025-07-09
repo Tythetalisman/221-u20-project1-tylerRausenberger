@@ -9,3 +9,7 @@ app.get('/', function(req, res) {
 
 
 app.listen(1337, () => console.log('Listening on port 1337.'))
+
+app.get('/feed', function(req, res){
+    res.sendFile('feed.html',{root: './client/views'})
+});

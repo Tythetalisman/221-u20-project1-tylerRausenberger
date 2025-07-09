@@ -1,8 +1,32 @@
 body {
-	
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+
+#background_image {
+  position: absolute;
+  top: 0; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  width: 1250px; 
+  height: 750px;
+  z-index: -1;
+}
+
+.button_wrapper {
+  width: 100%;
+  padding: 0 20px;
 }
 
 #splash_title {
+  padding-top: 150px;
 	width: 100%;
   font-size: 100px;
   color: red;
