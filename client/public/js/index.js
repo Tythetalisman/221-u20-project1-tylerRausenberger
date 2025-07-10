@@ -9,3 +9,24 @@ function checkKeyPress(e) {
     goToLocation('/feed');
   }
 }
+
+
+function checkKeyPress(event) {
+
+    if (event.key === " " || event.key === "Spacebar" || event.code === "Space") {
+        
+        event.preventDefault();
+        goToLocation("/feed");
+    }
+}
+
+document.addEventListener("keydown", checkKeyPress);
+
+document.addEventListener("DOMContentLoaded", () => {
+    const fadeText = document.getElementById("fade_text");
+    if (fadeText) {
+        fadeText.addEventListener("click", () => {
+            goToLocation("/feed");
+        });
+    }
+});
