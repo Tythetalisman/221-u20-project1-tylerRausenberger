@@ -1,50 +1,72 @@
-body {
+body, html {
   margin: 0;
-  height: 100vh;
+  padding: 0;
+  height: 100%;
+  background-color: #00205B; /* Navy */
+  font-family: sans-serif;
   overflow: hidden;
   position: relative;
+}
+
+.splash-container {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-}
-
-
-#background_image {
-  position: absolute;
-  top: 0; 
-  left: 50%; 
-  transform: translateX(-50%); 
-  width: 1250px; 
-  height: 750px;
-  z-index: -1;
-}
-
-.button_wrapper {
-  width: 100%;
-  padding: 0 20px;
+  justify-content: center;
+  z-index: 1;
+  position: relative;
 }
 
 #splash_title {
-  padding-top: 150px;
-	width: 100%;
-  font-size: 100px;
-  color: red;
-  opacity: 0.85;
-  text-shadow: 4px 4px 4px rgba(255, 255, 255);
+  font-size: 72px;
+  color: #FDB927; /* Gold */
+  text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
+  opacity: 0.95;
   text-align: center;
+  margin-bottom: 30px;
 }
 
 .menu_button {
-	background-color: rgba(255, 0, 0, 0.5);
-    font-size: 28px;
-    color: white;
-    cursor: pointer;
-    text-align: center;
-    user-select: none;
+  background-color: rgba(253, 185, 39, 0.8); /* Transparent gold */
+  font-size: 28px;
+  color: #00205B; /* Navy text */
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-weight: bold;
 }
 
-.background_button {
-    border-radius: 12px;
-    padding: 16px 20px;
+#background_image {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.1;
 }
+
+
+.floating-image {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  animation: float 5s ease-in-out infinite;
+  opacity: 0.5;
+  z-index: -1;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+
+#float1 { top: 10%; left: 15%; animation-delay: 0s; }
+#float2 { top: 30%; left: 70%; animation-delay: 1.5s; }
+#float3 { top: 60%; left: 40%; animation-delay: 3s; }

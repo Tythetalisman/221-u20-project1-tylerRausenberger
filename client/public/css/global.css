@@ -2,3 +2,17 @@ body {
 	display: flex;
 	flex-flow: column;
 }
+
+.clickable-title {
+  cursor: pointer;
+  font-weight: bold;
+  color: gold;
+  padding-left: 20px;
+  user-select: none;
+}
+
+.clickable-title:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+

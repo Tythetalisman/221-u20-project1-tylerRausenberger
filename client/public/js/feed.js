@@ -1,58 +1,132 @@
 document.addEventListener("DOMContentLoaded", () => {
     const portalButton = document.getElementById("portal_button");
-
-    function feedItem(title, body, linkUrl, imageUrl) {
-    this.title = title;
-    this.body = body;
-    this.linkUrl = linkUrl;
-    this.imageUrl = imageUrl;
-    }
-
-
-
-    const currentStories = [
-    new feedItem(
-        "Jason Lezak's comeback against France in the Mens 4x100 Freestyle Relay",
-        "An electrifying race forever etched in the annals of sports history. It was billed as one of the greatest comebacks of all time.",
-        "https://shorturl.at/If4PY",
-        "/images/Swimming_comeback.jpg"
-    ),
-    new feedItem(
-        "Marist Story2",
-        "This is the body of the story, it may be longer.",
-        "http://my.marist.edu",
-        "/images/news_pic.jpg"
-    ),
-    new feedItem(
-        "Marist Story3",
-        "This is the body of the story, it may be longer.",
-        "https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1",
-        "/images/hancock.jpeg"
-    )
-];
-const displayItem = (feedItem) => {
     const newsfeed = document.getElementById("newsfeed");
 
-        newsfeed.innerHTML += `
-        <div class="feed-item">
-        <h2>${feedItem.title}</h2>
-        <div class="media-row">
-      <img src="${feedItem.imageUrl}" alt="${feedItem.title}" />
-      <a href="${feedItem.linkUrl}" target="_blank" class="read-more">Read more</a>
-        </div>
-        <p>${feedItem.body}</p>
-        </div>
-`    ;
-};
+    function feedItem(title, body, linkUrl, imageUrl) {
+        this.title = title;
+        this.body = body;
+        this.linkUrl = linkUrl;
+        this.imageUrl = imageUrl;
+    }
 
+    const currentStories = [
+        new feedItem(
+            "Jason Lezak's comeback against France in the Mens 4x100 Freestyle Relay",
+            "An electrifying race forever etched in the annals of sports history. It was billed as one of the greatest comebacks of all time.",
+            "https://shorturl.at/If4PY",
+            "/images/Swimming_comeback.jpg"
+        ),
+        new feedItem(
+            "Marist Story2",
+            "This is the body of the story, it may be longer.",
+            "http://my.marist.edu",
+            "/images/Homepage1.jpeg"
+        ),
+        new feedItem(
+            "Marist Story3",
+            "This is the body of the story, it may be longer.",
+            "https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1",
+            "/images/hancock.jpeg"
+        ),
+        new feedItem(
+            "Marist Story4",
+            "This is the body of the story, it may be longer.",
+            "https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1",
+            "/images/hancock.jpeg"
+        ),
+        new feedItem(
+            "Marist Story5",
+            "This is the body of the story, it may be longer.",
+            "https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1",
+            "/images/hancock.jpeg"
+        ),
+        new feedItem(
+            "Marist Story6",
+            "This is the body of the story, it may be longer.",
+            "https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1",
+            "/images/hancock.jpeg"
+        )
+        
+    ];
 
-window.addEventListener("load", () => {
+    function displayItem(feedItem) {
+        const box = document.createElement("div");
+        box.className = "feed-item";
+        box.draggable = true;
+
+        box.innerHTML = `
+            <h2>${feedItem.title}</h2>
+            <div class="media-row">
+                <img src="${feedItem.imageUrl}" alt="${feedItem.title}" />
+                <a href="${feedItem.linkUrl}" target="_blank" class="read-more">Read more</a>
+            </div>
+            <p>${feedItem.body}</p>
+            <button class="color-toggle">🎨</button>
+        `;
+
+        // Drag events
+        box.addEventListener("dragstart", () => {
+            box.classList.add("dragging");
+        });
+
+        box.addEventListener("dragend", () => {
+            box.classList.remove("dragging");
+        });
+
+        // Color toggle
+        box.querySelector(".color-toggle").addEventListener("click", () => {
+            const isNavy = box.style.background.includes("navy");
+            box.style.background = isNavy
+                ? "linear-gradient(to bottom right, gold, navy)"
+                : "linear-gradient(to bottom right, navy, gold)";
+        });
+
+        newsfeed.appendChild(box);
+    }
+
+    // Load stories
     currentStories.forEach(displayItem);
-});
 
-if (portalButton) {
+    // Dragover event for the feed container
+    newsfeed.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const dragging = document.querySelector(".dragging");
+        const afterElement = getDragAfterElement(newsfeed, e.clientY);
+        if (!dragging) return;
+
+        if (afterElement == null) {
+            newsfeed.appendChild(dragging);
+        } else {
+            newsfeed.insertBefore(dragging, afterElement);
+        }
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll(".feed-item:not(.dragging)")];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    if (portalButton) {
         portalButton.addEventListener("click", () => {
-            goToLocation("http://my.marist.edu");
+            goToLocation("https://www.usaswimming.org/");
         });
     }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const title = document.getElementById("site_title");
+  if (title) {
+    title.addEventListener("click", () => {
+      window.location.href = "/"; 
+    });
+  }
 });
