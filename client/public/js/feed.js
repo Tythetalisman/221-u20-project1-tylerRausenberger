@@ -17,9 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
             "/images/Swimming_comeback.jpg"
         ),
         new feedItem(
-            "Marist Story2",
-            "This is the body of the story, it may be longer.",
-            "http://my.marist.edu",
+            "Newburgh Captures Section IX Swim Title",
+            "The Newburgh Free Academy boys swim team clinched the NYSPHSAA Section IX championship on February 20‑22 at Valley Central, showcasing remarkable depth and teamwork.",
+            "https://www.timeshudsonvalley.com/mid-hudson-times/mid-hudson-times/stories/newburgh-captures-section-ix-swim-title%2C159115",
             "/images/Homepage1.jpeg"
         ),
         new feedItem(
@@ -130,3 +130,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function getCurrentFeed() {
+  fetch('/api/feed')
+    .then((res) => res.json())
+    .then((data) => {
+      const container = document.getElementById('newsfeed');
+      container.innerHTML = '';
+      data.forEach(displayItem); 
+    });
+}
+
+function deleteFeedItem(id) {
+  fetch(`/api/feed/${id}`, { method: 'DELETE' })
+    .then(() => getCurrentFeed());
+}

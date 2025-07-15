@@ -1,15 +1,40 @@
-const express = require('express')
+
+
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const feedController = require('./Controller/feedItemController');
+
 const app = express();
+const port = 1337;
+
+
 app.use(express.static('client/public'));
 
+
+app.use(bodyParser.json());
+
+
 app.get('/', function(req, res) {
-    res.sendFile('index.html', {root: './client/views'})
-})
+  res.sendFile(path.join(__dirname, '../client/views/index.html'));
+});
+
+app.get('/feed', function(req, res) {
+  res.sendFile(path.join(__dirname, '../client/views/feed.html'));
+});
 
 
+app.route('/api/feed')
+  .get(feedController.getAllFeedItems)
+  .post(feedController.saveFeedItem);
 
-app.listen(1337, () => console.log('Listening on port 1337.'))
+app.route('/api/feed/:id')
+  .get(feedController.getFeedItemById)
+  .delete(feedController.deleteFeedItemById)
+  .patch(feedController.updateFeedItemById);
 
-app.get('/feed', function(req, res){
-    res.sendFile('feed.html',{root: './client/views'})
+
+app.listen(port, () => {
+  console.log(` Server running at http://localhost:${port}`);
 });
