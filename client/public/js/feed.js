@@ -145,3 +145,53 @@ function deleteFeedItem(id) {
   fetch(`/api/feed/${id}`, { method: 'DELETE' })
     .then(() => getCurrentFeed());
 }
+
+function submitNewPost() {
+  const title = document.getElementById('post-title').value.trim();
+  const body = document.getElementById('post-body').value.trim();
+  const linkUrl = document.getElementById('post-link').value.trim();
+  const imageUrl = document.getElementById('post-image').value.trim();
+
+  if (!title || !body || !linkUrl || !imageUrl) {
+    alert("Please fill out all fields.");
+    return;
+  }
+
+  const newPost = { title, body, linkUrl, imageUrl };
+
+  fetch('/api/feed', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newPost)
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Failed to create post");
+    return res.json();
+  })
+  .then(data => {
+    console.log("Post created:", data);
+    clearForm();
+    getCurrentFeed(); // This should reload the feed list
+  })
+  .catch(err => {
+    console.error("Error creating post:", err);
+    alert("There was an error creating the post.");
+  });
+}
+
+function clearForm() {
+  document.getElementById('post-title').value = '';
+  document.getElementById('post-body').value = '';
+  document.getElementById('post-link').value = '';
+  document.getElementById('post-image').value = '';
+}
+
+function getCurrentFeed() {
+  fetch('/api/feed')
+    .then(res => res.json())
+    .then(feedItems => {
+      const newsfeed = document.getElementById('newsfeed');
+      newsfeed.innerHTML = ''; // Clear previous items
+      feedItems.forEach(item => displayItem(item));
+    });
+}

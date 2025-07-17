@@ -9,14 +9,6 @@ exports.getAllFeedItems = (req, res) => {
   res.send(feedItems);
 };
 
-exports.saveFeedItem = (req, res) => {
-  const { title, body, linkUrl, imageUrl } = req.body;
-  const newItem = new FeedItem(title, body, linkUrl, imageUrl);
-  feedItems.push(newItem);
-  res.setHeader('Content-Type', 'application/json');
-  res.send(feedItems);
-};
-
 exports.getFeedItemById = (req, res) => {
   const id = parseInt(req.params.id);
   const item = feedItems[id];
@@ -49,4 +41,16 @@ exports.updateFeedItemById = (req, res) => {
 
   res.setHeader('Content-Type', 'application/json');
   res.send(item);
+};
+
+exports.saveFeedItem = (req, res) => {
+  const { title, body, linkUrl, imageUrl } = req.body;
+
+  if (!title || !body || !linkUrl || !imageUrl) {
+    return res.status(400).send({ error: "All fields are required" });
+  }
+
+  const newItem = new FeedItem(title, body, linkUrl, imageUrl); 
+  feedItems.push(newItem);
+  res.status(201).json(newItem);
 };

@@ -1,6 +1,3 @@
-
-
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -11,16 +8,14 @@ const port = 1337;
 
 
 app.use(express.static('client/public'));
-
-
 app.use(bodyParser.json());
 
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/views/index.html'));
 });
 
-app.get('/feed', function(req, res) {
+app.get('/feed', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/views/feed.html'));
 });
 
@@ -36,5 +31,5 @@ app.route('/api/feed/:id')
 
 
 app.listen(port, () => {
-  console.log(` Server running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });

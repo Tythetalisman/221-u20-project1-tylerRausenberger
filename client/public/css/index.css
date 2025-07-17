@@ -2,9 +2,9 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: #00205B; /* Navy */
+  background-color: #00205B; 
   font-family: sans-serif;
-  overflow: hidden;
+  overflow: visible;  
   position: relative;
 }
 
@@ -14,25 +14,25 @@ body, html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 10; 
   position: relative;
+  color: #FDB927; 
+  text-align: center;
 }
 
 #splash_title {
   font-size: 72px;
-  color: #FDB927; /* Gold */
+  color: #FDB927; 
   text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
   opacity: 0.95;
-  text-align: center;
   margin-bottom: 30px;
 }
 
 .menu_button {
-  background-color: rgba(253, 185, 39, 0.8); /* Transparent gold */
+  background-color: rgba(253, 185, 39, 0.8);
   font-size: 28px;
-  color: #00205B; /* Navy text */
+  color: #00205B;
   cursor: pointer;
-  text-align: center;
   user-select: none;
   border-radius: 12px;
   padding: 16px 20px;
@@ -40,33 +40,53 @@ body, html {
 }
 
 #background_image {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -1;
+  z-index: 0;
   opacity: 0.1;
 }
 
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
 
 .floating-image {
-  position: absolute;
-  width: 150px;
+  position: fixed;
+  width: 350px;
   height: auto;
   animation: float 5s ease-in-out infinite;
   opacity: 0.5;
-  z-index: -1;
+  z-index: 1;
+  pointer-events: none;
 }
 
-@keyframes float {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-20px); }
-  100% { transform: translateY(0); }
+#float1 {
+  top: 10%;
+  left: 15%;
+  animation-delay: 0s;
 }
 
-#float1 { top: 10%; left: 15%; animation-delay: 0s; }
-#float2 { top: 30%; left: 70%; animation-delay: 1.5s; }
-#float3 { top: 60%; left: 40%; animation-delay: 3s; }
+#float2 {
+  top: 30%;
+  left: 70%;
+  animation-delay: 1.5s;
+}
+
+#float3 {
+  top: 60%;
+  left: 40%;
+  animation-delay: 3s;
+}
