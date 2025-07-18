@@ -46,60 +46,72 @@ document.addEventListener("DOMContentLoaded", () => {
             "https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1",
             "/images/hancock.jpeg"
         )
-        
     ];
 
     function displayItem(feedItem) {
-        const box = document.createElement("div");
-        box.className = "feed-item";
-        box.draggable = true;
+  const box = document.createElement("div");
+  box.className = "feed-item";
+  box.draggable = true;
 
-        box.innerHTML = `
-            <h2>${feedItem.title}</h2>
-            <div class="media-row">
-                <img src="${feedItem.imageUrl}" alt="${feedItem.title}" />
-                <a href="${feedItem.linkUrl}" target="_blank" class="read-more">Read more</a>
-            </div>
-            <p>${feedItem.body}</p>
-            <button class="color-toggle">🎨</button>
-        `;
+  box.innerHTML = `
+    <h2>${feedItem.title}</h2>
+    <div class="media-row">
+      <img src="${feedItem.imageUrl}" alt="${feedItem.title}" />
+      <a href="${feedItem.linkUrl}" target="_blank" class="read-more">Read more</a>
+    </div>
+    <p>${feedItem.body}</p>
+    <div class="feed-controls">
+      <button class="color-toggle">🎨</button>
+      <button class="delete-button">🗑️</button>
+    </div>
+  `;
 
-        // Drag events
-        box.addEventListener("dragstart", () => {
-            box.classList.add("dragging");
-        });
+ 
+  box.addEventListener("dragstart", () => box.classList.add("dragging"));
+  box.addEventListener("dragend", () => box.classList.remove("dragging"));
 
-        box.addEventListener("dragend", () => {
-            box.classList.remove("dragging");
-        });
+  
+  const deleteBtn = box.querySelector(".delete-button");
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", () => {
+      if (confirm("Are you sure you want to delete this post?")) {
+        deleteFeedItem(feedItem.id);  
+      }
+    });
+  }
 
-        // Color toggle
-        box.querySelector(".color-toggle").addEventListener("click", () => {
-            const isNavy = box.style.background.includes("navy");
-            box.style.background = isNavy
-                ? "linear-gradient(to bottom right, gold, navy)"
-                : "linear-gradient(to bottom right, navy, gold)";
-        });
-
-        newsfeed.appendChild(box);
+  
+  const container = document.getElementById("feed_container");
+  if (container) {
+    container.appendChild(box);
+  } else {
+    console.error("Missing #feed_container in HTML");
+  }
+}
+const container = document.getElementById("feed_container");
+if (container) {
+    container.innerHTML = '';
+}
+    
+    if (newsfeed) {
+        currentStories.forEach(displayItem);
     }
 
-    // Load stories
-    currentStories.forEach(displayItem);
+    
+    if (newsfeed) {
+        newsfeed.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            const dragging = document.querySelector(".dragging");
+            const afterElement = getDragAfterElement(newsfeed, e.clientY);
+            if (!dragging) return;
 
-    // Dragover event for the feed container
-    newsfeed.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        const dragging = document.querySelector(".dragging");
-        const afterElement = getDragAfterElement(newsfeed, e.clientY);
-        if (!dragging) return;
-
-        if (afterElement == null) {
-            newsfeed.appendChild(dragging);
-        } else {
-            newsfeed.insertBefore(dragging, afterElement);
-        }
-    });
+            if (afterElement == null) {
+                newsfeed.appendChild(dragging);
+            } else {
+                newsfeed.insertBefore(dragging, afterElement);
+            }
+        });
+    }
 
     function getDragAfterElement(container, y) {
         const draggableElements = [...container.querySelectorAll(".feed-item:not(.dragging)")];
@@ -117,81 +129,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (portalButton) {
         portalButton.addEventListener("click", () => {
-            goToLocation("https://www.usaswimming.org/");
+            window.location.href = "https://www.usaswimming.org/";
         });
     }
+
+    
+    const title = document.getElementById("site_title");
+    if (title) {
+        title.addEventListener("click", () => {
+            window.location.href = "/";
+        });
+    }
+
+   
+    function getCurrentFeed() {
+        fetch('/api/feed')
+            .then(res => res.json())
+            .then(feedItems => {
+                newsfeed.innerHTML = '';
+                feedItems.forEach(item => displayItem(item));
+            });
+    }
+
+    
+    function deleteFeedItem(id) {
+        fetch(`/api/feed/${id}`, { method: 'DELETE' })
+            .then(() => getCurrentFeed());
+    }
+
+   
+    function submitNewPost() {
+        const title = document.getElementById('post-title').value.trim();
+        const body = document.getElementById('post-body').value.trim();
+        const linkUrl = document.getElementById('post-link').value.trim();
+        const imageUrl = document.getElementById('post-image').value.trim();
+
+        if (!title || !body || !linkUrl || !imageUrl) {
+            alert("Please fill out all fields.");
+            return;
+        }
+
+        const newPost = { title, body, linkUrl, imageUrl };
+
+        fetch('/api/feed', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newPost)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to create post");
+            return res.json();
+        })
+        .then(data => {
+            console.log("Post created:", data);
+            clearForm();
+            getCurrentFeed();
+        })
+        .catch(err => {
+            console.error("Error creating post:", err);
+            alert("There was an error creating the post.");
+        });
+    }
+
+    
+    function clearForm() {
+        document.getElementById('post-title').value = '';
+        document.getElementById('post-body').value = '';
+        document.getElementById('post-link').value = '';
+        document.getElementById('post-image').value = '';
+    }
+
+  
+    window.getCurrentFeed = getCurrentFeed;
+    window.deleteFeedItem = deleteFeedItem;
+    window.submitNewPost = submitNewPost;
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const title = document.getElementById("site_title");
-  if (title) {
-    title.addEventListener("click", () => {
-      window.location.href = "/"; 
-    });
-  }
-});
-
-function getCurrentFeed() {
-  fetch('/api/feed')
-    .then((res) => res.json())
-    .then((data) => {
-      const container = document.getElementById('newsfeed');
-      container.innerHTML = '';
-      data.forEach(displayItem); 
-    });
-}
-
-function deleteFeedItem(id) {
-  fetch(`/api/feed/${id}`, { method: 'DELETE' })
-    .then(() => getCurrentFeed());
-}
-
-function submitNewPost() {
-  const title = document.getElementById('post-title').value.trim();
-  const body = document.getElementById('post-body').value.trim();
-  const linkUrl = document.getElementById('post-link').value.trim();
-  const imageUrl = document.getElementById('post-image').value.trim();
-
-  if (!title || !body || !linkUrl || !imageUrl) {
-    alert("Please fill out all fields.");
-    return;
-  }
-
-  const newPost = { title, body, linkUrl, imageUrl };
-
-  fetch('/api/feed', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newPost)
-  })
-  .then(res => {
-    if (!res.ok) throw new Error("Failed to create post");
-    return res.json();
-  })
-  .then(data => {
-    console.log("Post created:", data);
-    clearForm();
-    getCurrentFeed(); // This should reload the feed list
-  })
-  .catch(err => {
-    console.error("Error creating post:", err);
-    alert("There was an error creating the post.");
-  });
-}
-
-function clearForm() {
-  document.getElementById('post-title').value = '';
-  document.getElementById('post-body').value = '';
-  document.getElementById('post-link').value = '';
-  document.getElementById('post-image').value = '';
-}
-
-function getCurrentFeed() {
-  fetch('/api/feed')
-    .then(res => res.json())
-    .then(feedItems => {
-      const newsfeed = document.getElementById('newsfeed');
-      newsfeed.innerHTML = ''; // Clear previous items
-      feedItems.forEach(item => displayItem(item));
-    });
-}
